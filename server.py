@@ -41,7 +41,6 @@ def updateTodo(id):
     data = request.get_json()
     title = data['title']
     desc = data['desc']
-    print(title, desc)
     TodoList = Todo.query.all()
     for todo in TodoList:
         lis.append({"unique_id": todo.unique_id, "title": todo.title, "desc": todo.desc,
