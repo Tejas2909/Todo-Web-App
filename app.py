@@ -12,39 +12,25 @@ class Todo(db.Model):
     unique_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), unique=False, nullable=False)
     desc = db.Column(db.String(120), unique=False, nullable=False)
-    pub_date = db.Column(db.DateTime, nullable=False,
-                         default=datetime.utcnow)
+    schedule_date = db.Column(db.String(120), nullable=False,
+                              default=datetime.utcnow)
 
 
 @app.route("/add", methods=["GET", "POST"])
 def add():
     lis = []
     data = request.get_json()
+    print(data)
     title = data['title']
     desc = data['desc']
-    todo = Todo(title=title, desc=desc)
+    schedule_date = data['scheduleDate']
+    todo = Todo(title=title, desc=desc, schedule_date=schedule_date)
     db.session.add(todo)
     db.session.commit()
     TodoList = Todo.query.all()
     for todo in TodoList:
         lis.append({"unique_id": todo.unique_id, "title": todo.title, "desc": todo.desc,
-                   "pub_date": todo.pub_date})
-    data = {
-        "TodoList": lis
-    }
-    return jsonify(data)
-
-
-@app.route("/update/<int:id>/", methods=["GET", "POST"])
-def updateTodo(id):
-    lis = []
-    data = request.get_json()
-    title = data['title']
-    desc = data['desc']
-    TodoList = Todo.query.all()
-    for todo in TodoList:
-        lis.append({"unique_id": todo.unique_id, "title": todo.title, "desc": todo.desc,
-                   "pub_date": todo.pub_date})
+                    "scheduleDate": todo.schedule_date})
     data = {
         "TodoList": lis
     }
@@ -60,7 +46,7 @@ def deleteTodo(id):
     TodoList = Todo.query.all()
     for todo in TodoList:
         lis.append({"unique_id": todo.unique_id, "title": todo.title, "desc": todo.desc,
-                   "pub_date": todo.pub_date})
+                    "scheduleDate": todo.schedule_date})
     data = {
         "TodoList": lis
     }
@@ -73,7 +59,7 @@ def show():
     TodoList = Todo.query.all()
     for todo in TodoList:
         lis.append({"unique_id": todo.unique_id, "title": todo.title, "desc": todo.desc,
-                   "pub_date": todo.pub_date})
+                    "scheduleDate": todo.schedule_date})
     data = {
         "TodoList": lis
     }
