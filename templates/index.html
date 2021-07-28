@@ -39,13 +39,30 @@
       </div>
       <div style="margin: 4rem 0">
         <label style="font-size: 2rem" for="scheduleDate" class="form-label"
-          >Scheduled At</label
+          >Scheduled Date</label
         >
         <div class="row">
           <div class="col-sm-6">
             <div class="form-group">
               <div class="input-group date" id="datetimepicker1">
                 <input id="scheduleDate" type="text" class="form-control" />
+                <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin: 4rem 0">
+        <label style="font-size: 2rem" for="scheduleDate" class="form-label"
+          >Completion Date</label
+        >
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <div class="input-group date" id="datetimepicker2">
+                <input id="completionDate" type="text" class="form-control" />
                 <span class="input-group-addon">
                   <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -63,6 +80,7 @@
     <script>
       $(document).ready(function () {
         $("#datetimepicker1").datetimepicker();
+        $("#datetimepicker2").datetimepicker();
       });
       const digits_only = (string) =>
         [...string].every((c) => "0123456789".includes(c));
@@ -73,7 +91,7 @@
         if (data.TodoList.length > 0) {
           const tableHead = document.getElementById("tableHead");
           headHtml =
-            "<tr><th scope='col'>Sno.</th><th scope='col'>Title</th><th scope='col'>Description</th> <th scope='col'>Sceduled At</th><th scope='col'>Actions</th></tr>";
+            "<tr><th scope='col'>Sno.</th><th scope='col'>Title</th><th scope='col'>Description</th> <th scope='col'>Sceduled Date</th> <th scope='col'>Completion Date</th><th scope='col'>Actions</th></tr>";
           tableHead.innerHTML = headHtml;
         }
         for (var i = 0; i < data.TodoList.length; i++) {
@@ -89,6 +107,7 @@
             data.TodoList[i].unique_id +
             `">${data.TodoList[i].desc}</td>
                       <td>${data.TodoList[i].scheduleDate}</td>
+                      <td>${data.TodoList[i].completionDate}</td>
                       <td>
                       <button onclick="deleteTodo(` +
             data.TodoList[i].unique_id +
@@ -99,6 +118,7 @@
         document.getElementById("titleInput").value = "";
         document.getElementById("descInput").value = "";
         document.getElementById("scheduleDate").value = "";
+        document.getElementById("completionDate").value = "";
       };
       fetch("/show", {
         method: "GET",
@@ -124,8 +144,8 @@
         const title = document.getElementById("titleInput").value;
         const desc = document.getElementById("descInput").value;
         const scheduleDate = document.getElementById("scheduleDate").value;
-        console.log(scheduleDate);
-        if (!title || !desc || !scheduleDate) {
+        const completionDate = document.getElementById("completionDate").value;
+        if (!title || !desc || !scheduleDate || !completionDate) {
           alert("Please fill all the fields");
           return;
         }
@@ -133,12 +153,18 @@
           alert("Numbers are not allowed for any of the fields!!");
           return;
         }
+        const sd = new Date(scheduleDate);
+        const cd = new Date(completionDate)
+        if(cd <= sd){
+          alert("compeletion date can be only set after the scheduled date");
+          return;
+        }
         const data = {
           title: title,
           desc: desc,
           scheduleDate: scheduleDate,
+          completionDate: completionDate
         };
-        console.log(data);
         fetch("/add", {
           method: "POST",
           headers: {

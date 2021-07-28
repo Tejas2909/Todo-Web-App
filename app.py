@@ -14,6 +14,8 @@ class Todo(db.Model):
     desc = db.Column(db.String(120), unique=False, nullable=False)
     schedule_date = db.Column(db.String(120), nullable=False,
                               default=datetime.utcnow)
+    completion_date=db.Column(db.String(120), nullable=False,
+                              default=datetime.utcnow)
 
 
 @app.route("/add", methods=["GET", "POST"])
@@ -24,13 +26,14 @@ def add():
     title = data['title']
     desc = data['desc']
     schedule_date = data['scheduleDate']
-    todo = Todo(title=title, desc=desc, schedule_date=schedule_date)
+    completion_date = data['completionDate']
+    todo = Todo(title=title, desc=desc, schedule_date=schedule_date , completion_date=completion_date)
     db.session.add(todo)
     db.session.commit()
     TodoList = Todo.query.all()
     for todo in TodoList:
         lis.append({"unique_id": todo.unique_id, "title": todo.title, "desc": todo.desc,
-                    "scheduleDate": todo.schedule_date})
+                    "scheduleDate": todo.schedule_date,"completionDate":todo.completion_date})
     data = {
         "TodoList": lis
     }
