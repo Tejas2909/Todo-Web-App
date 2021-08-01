@@ -49,7 +49,7 @@ def deleteTodo(id):
     TodoList = Todo.query.all()
     for todo in TodoList:
         lis.append({"unique_id": todo.unique_id, "title": todo.title, "desc": todo.desc,
-                    "scheduleDate": todo.schedule_date})
+                    "scheduleDate": todo.schedule_date,"completionDate":todo.completion_date})
     data = {
         "TodoList": lis
     }
@@ -62,7 +62,7 @@ def show():
     TodoList = Todo.query.all()
     for todo in TodoList:
         lis.append({"unique_id": todo.unique_id, "title": todo.title, "desc": todo.desc,
-                    "scheduleDate": todo.schedule_date})
+                    "scheduleDate": todo.schedule_date,"completionDate":todo.completion_date})
     data = {
         "TodoList": lis
     }
